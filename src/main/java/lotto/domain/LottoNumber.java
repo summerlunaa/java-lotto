@@ -10,12 +10,14 @@ public class LottoNumber implements Comparable<LottoNumber> {
 
     private static final int MINIMUM_RANGE = 1;
     private static final int MAXIMUM_RANGE = 45;
-    private static final Map<Integer, LottoNumber> CACHE = new HashMap<>();
+    private static final Map<Integer, LottoNumber> LOTTO_NUMBERS;
 
     static {
+        Map<Integer, LottoNumber> lottoNumbers = new HashMap<>();
         for (int i = MINIMUM_RANGE; i <= MAXIMUM_RANGE; i++) {
-            CACHE.put(i, new LottoNumber(i));
+            lottoNumbers.put(i, new LottoNumber(i));
         }
+        LOTTO_NUMBERS = Map.copyOf(lottoNumbers);
     }
 
     private final int lottoNumber;
@@ -27,7 +29,7 @@ public class LottoNumber implements Comparable<LottoNumber> {
 
     public static LottoNumber from(int number) {
         checkRange(number);
-        return CACHE.get(number);
+        return LOTTO_NUMBERS.get(number);
     }
 
     private static void checkRange(int number) {
@@ -41,7 +43,7 @@ public class LottoNumber implements Comparable<LottoNumber> {
     }
 
     public static List<LottoNumber> getLottoNumbers() {
-        return new ArrayList<>(CACHE.values());
+        return new ArrayList<>(LOTTO_NUMBERS.values());
     }
 
     public int getLottoNumber() {
