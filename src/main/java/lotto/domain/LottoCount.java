@@ -1,13 +1,15 @@
 package lotto.domain;
 
 import lotto.exception.LottoCountException;
+import lotto.util.InputConvertor;
 
 public class LottoCount {
 
     private final int manualLottoCount;
     private final int autoLottoCount;
 
-    public LottoCount(int totalLottoCount, int manualLottoCount) {
+    public LottoCount(int totalLottoCount, String manualLottoCountInput) {
+        int manualLottoCount = InputConvertor.toInt(manualLottoCountInput);
         checkNegative(manualLottoCount);
         checkLottoCountOverMoney(totalLottoCount, manualLottoCount);
         this.manualLottoCount = manualLottoCount;

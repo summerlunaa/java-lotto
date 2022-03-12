@@ -1,10 +1,12 @@
 package lotto.controller;
 
+import java.util.List;
+import lotto.domain.Lotto;
 import lotto.domain.LottoCount;
-import lotto.domain.Lottos;
 import lotto.domain.LottoPurchaseMoney;
 import lotto.domain.RankCounter;
 import lotto.domain.WinningNumbers;
+import lotto.generator.LottoGenerator;
 import lotto.view.InputView;
 import lotto.view.OutputView;
 
@@ -12,9 +14,9 @@ public class Controller {
 
     public void run() {
         LottoPurchaseMoney lottoPurchaseMoney = getLottoPurchaseMoney();
-        LottoCount lottoCounter = getLottoCounter(lottoPurchaseMoney);
-        Lottos lottos = getLottos(lottoCounter);
-        OutputView.printLottos(lottoCounter, lottos);
+        LottoCount lottoCount = getLottoCount(lottoPurchaseMoney);
+        List<Lotto> lottos = getLottos(lottoCount);
+        OutputView.printLottos(lottoCount, lottos);
 
         RankCounter rankCounter = RankCounter.newInstance(lottos, getWinningNumbers());
         OutputView.printWinningStatistic(lottoPurchaseMoney, rankCounter);
@@ -29,23 +31,24 @@ public class Controller {
         }
     }
 
-    private LottoCount getLottoCounter(LottoPurchaseMoney lottoPurchaseMoney) {
+    private LottoCount getLottoCount(LottoPurchaseMoney lottoPurchaseMoney) {
         try {
             return new LottoCount(lottoPurchaseMoney.calculateTotalLottoCount(), InputView.inputManualLottoCount());
         } catch (IllegalArgumentException exception) {
             OutputView.printErrorMessage(exception.getMessage());
-            return getLottoCounter(lottoPurchaseMoney);
+            return getLottoCount(lottoPurchaseMoney);
         }
     }
 
-    private Lottos getLottos(LottoCount lottoCounter) {
+    private List<Lotto> getLottos(LottoCount lottoCount) {
         try {
-            Lottos manualLottos = Lottos.newInstanceByManual(InputView.inputManualLottos(lottoCounter.getManualLottoCount()));
-            Lottos autoLottos = Lottos.newInstanceByAuto(lottoCounter.getAutoLottoCount());
-            return manualLottos.getCombinedLottos(autoLottos);
+            List<String> manualLottosInput = InputView.inputManualLottos(lottoCount.getManualLottoCount());
+            List<Lotto> manualLottos = LottoGenerator.generateLottosByManual(manualLottosInput);
+            List<Lotto> autoLottos = LottoGenerator.generateLottosByAuto(lottoCount.getAutoLottoCount());
+            return LottoGenerator.getCombinedLottos(manualLottos, autoLottos);
         } catch (IllegalArgumentException exception) {
             OutputView.printErrorMessage(exception.getMessage());
-            return getLottos(lottoCounter);
+            return getLottos(lottoCount);
         }
     }
 

@@ -2,6 +2,7 @@ package lotto.domain;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class RankCounter {
@@ -12,7 +13,7 @@ public class RankCounter {
         this.rankCount = rankCount;
     }
 
-    public static RankCounter newInstance(Lottos lottos, WinningNumbers winningNumbers){
+    public static RankCounter newInstance(List<Lotto> lottos, WinningNumbers winningNumbers){
         Map<Rank, Integer> rankCount = new EnumMap<>(Rank.class);
         initRankCount(rankCount);
         calculateRank(rankCount, lottos, winningNumbers);
@@ -24,8 +25,8 @@ public class RankCounter {
                 .forEach(rank -> rankCount.put(rank, 0));
     }
 
-    private static void calculateRank(Map<Rank, Integer> rankCount, Lottos lottos, WinningNumbers winningNumbers) {
-        lottos.getLottos().stream()
+    private static void calculateRank(Map<Rank, Integer> rankCount, List<Lotto> lottos, WinningNumbers winningNumbers) {
+        lottos.stream()
                 .map(lotto -> lotto.getRank(winningNumbers))
                 .forEach(rank -> increaseCount(rankCount, rank));
     }

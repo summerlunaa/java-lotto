@@ -3,15 +3,16 @@ package lotto.domain;
 import java.util.List;
 import lotto.exception.BonusNumberException;
 import lotto.generator.LottoGenerator;
+import lotto.util.InputConvertor;
 
 public class WinningNumbers {
 
     private final Lotto winningLotto;
     private final LottoNumber bonusNumber;
 
-    public WinningNumbers(List<Integer> winningNumbersInput, int bonusNumberInput) {
+    public WinningNumbers(String winningNumbersInput, String bonusNumberInput) {
         this.winningLotto = LottoGenerator.generateLottoByManual(winningNumbersInput);
-        LottoNumber bonusNumber = LottoNumber.from(bonusNumberInput);
+        LottoNumber bonusNumber = LottoNumber.from(InputConvertor.toInt(bonusNumberInput));
         checkDuplication(winningLotto, bonusNumber);
         this.bonusNumber = bonusNumber;
     }

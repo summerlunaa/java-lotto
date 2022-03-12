@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import lotto.exception.LottoException;
+import lotto.util.InputConvertor;
 
 public class Lotto {
 
@@ -16,6 +17,19 @@ public class Lotto {
         checkSize(lotto);
         checkDuplication(lotto);
         this.lotto = new ArrayList<>(lotto);
+    }
+
+    public static Lotto newInstanceByString(String lottoInput) {
+        List<Integer> numbers = InputConvertor.toInt(InputConvertor.splitInput(lottoInput, ","));
+        List<LottoNumber> lottoNumbers = convertToLottoNumbers(numbers);
+        return new Lotto(lottoNumbers);
+    }
+
+    private static List<LottoNumber> convertToLottoNumbers(List<Integer> numbers) {
+        return numbers.stream()
+                .map(LottoNumber::from)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private void checkSize(List<LottoNumber> lotto) {
